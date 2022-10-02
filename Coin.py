@@ -29,3 +29,23 @@ def probNHeads(coins: Sequence[Coin], n: int) -> float:
         return 1
 
     return coins[0].p["heads"] * probNHeads(coins[1:], n-1) + coins[0].p["tails"] * probNHeads(coins[1:], n)
+
+
+def probFromFairCoin(probability: float, precision: int):
+
+    rng = np.random.default_rng()
+
+    flips = rng.integers(
+        low=0,
+        high=2,
+        size=int(precision * np.log2(10))+1
+    )
+    
+    result = np.sum(
+        (
+            flip * 0.5 ** (index+1)
+            for index, flip in enumerate(flips)
+        )
+    )
+
+    return result <= probability
