@@ -1,6 +1,9 @@
 from Coins import *
 from Dice import *
 from MontyHall import *
+from TrollsAndBridges import *
+from typing import Sequence
+from copy import copy
 import numpy as np
 
 
@@ -51,7 +54,7 @@ def problem2(probability: float, precision: int, reps: int):
     print(f"Normalized: {outcomeFreqs}")
 
 
-def problem3(target: int, reps: int):
+def problem3(target: int, dieFaces: Sequence, reps: int):
     if not reps:
         return
 
@@ -59,7 +62,7 @@ def problem3(target: int, reps: int):
 
     wins = 0
     dice = tuple(
-        Die(faces=(1, 2, 3, 4, 7, 8, 9),
+        Die(faces=dieFaces,
             proportionalDistribution=(1, 1, 1, 1, 1, 1, 1)) for _ in range(2))
     for _ in range(reps):
         if np.sum([roll(die) for die in dice]) == target:
@@ -92,24 +95,82 @@ def problem4(reps: int):
     print(f"Non-switch wins: {nonSwitchWins} -> {100*nonSwitchWins / reps}%")
 
 
+def problem5(reps: int):
+    if not reps:
+        return
+
+    print("--- \n Problem 5 \n")
+
+    rng = np.random.default_rng()
+
+    wins = 0
+
+    bridges = (
+            Bridge(_trolls=2, _gnomes=3),
+            Bridge(_trolls=1, _gnomes=4),
+            Bridge(_trolls=3, _gnomes=2),
+            Bridge(_trolls=0, _gnomes=5)
+        )
+
+    bridgeFreqs = (
+        0.1,
+        0.3,
+        0.1,
+        0.5
+    )
+    
+    for _ in range(reps):
+        bridge = copy(
+            rng.choice(
+            bridges, p=bridgeFreqs
+            )
+        )
+        
+        np.delete(
+            bridge.contents,
+            rng.integers(0, len(bridge.contents))
+        )
+
+        if bridge.trolls == 0:
+            wins += 1
+
+    print(f"The knight survived {wins} times.")
+    print(f"Probability of survival: {wins / reps}")
+    print(f"Percent probability of survival: {100 * wins / reps}%")
+    
+
 def percentError(expectation, outcome):
     return 100 * abs(expectation - outcome) / expectation
 
 
-def main(p1Reps=0, p2Reps=0, p3Reps=0, p4Reps=0):
-    problem1(coinProbabilities=(0.35, 0.65, 0.60), reps=p1Reps)
+def main(p1Reps=0, p2Reps=0, p3Reps=0, p4Reps=0, p5Reps=0):
+    problem1(
+        coinProbabilities=(0.35, 0.65, 0.60),
+        reps=p1Reps
+    )
 
-    problem2(probability=1 / 3, precision=4, reps=p2Reps)
+    problem2(
+        probability=1 / 3,
+        precision=4,
+        reps=p2Reps            
+    )
 
-    problem3(target=8, reps=p3Reps)
+    problem3(
+        dieFaces=(1,2,3,4,7,8,9),
+        target=8,
+        reps=p3Reps
+    )
 
-    problem4(reps=p4Reps)
+    problem4(
+        reps=p4Reps
+    )
+
+    problem5(
+        reps=p5Reps,
+    )
 
 
 if __name__ == "__main__":
     main(
-        p1Reps=10**3,
-        p2Reps=10**3,
-        p3Reps=10**3,
-        p4Reps=10**3,
+        
     )

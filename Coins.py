@@ -31,7 +31,7 @@ def probNHeads(coins: Sequence[Coin], n: int) -> float:
     return coins[0].p["heads"] * probNHeads(coins[1:], n-1) + coins[0].p["tails"] * probNHeads(coins[1:], n)
 
 
-def probFromFairCoin(probability: float, precision: int):
+def probFromFairCoin(probability: float, precision: int) -> bool:
 
     rng = np.random.default_rng()
 

@@ -1,6 +1,6 @@
 import numpy as np
 
-def montyHallProblem(switch: bool, numDoors=3):
+def montyHallProblem(switch: bool, numDoors=3) -> bool:
     rng = np.random.default_rng()
     
     doors = [True] + [False] * (numDoors - 1)
